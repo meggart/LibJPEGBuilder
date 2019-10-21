@@ -1,0 +1,39 @@
+language: julia
+os:
+  - linux
+julia:
+  - 1.0
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+    - downloads
+env:
+  global:
+    - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+    - BINARYBUILDER_AUTOMATIC_APPLE=false
+sudo: required
+
+# Before anything else, get the latest versions of things
+before_script:
+  - julia -e 'using Pkg; pkg"add BinaryProvider"; pkg"add BinaryBuilder#master"; Pkg.build()'
+
+script:
+  - julia build_tarballs.jl
+
+
+deploy:
+    provider: releases
+    api_key:
+        # Note; this api_key is only valid for meggart/BuildJPEG; you need
+        # to make your own: https://docs.travis-ci.com/user/deployment/releases/
+        secure: w3dldMtB11tobgJ1YlUsYf4xjoHFmdxIFGA/uaGjDo+4aGoUFlKvi1Bf/LLSilP1zyPFb6CoKxkrAz6puuPmsKnDoh1pJSp47ckUyOKwNyGxgf75Dh0GkQgMlY8oEVHpfF4rs9hweeWR9GmxorQCXm5aaFTEdCwURjg6KD5gNLmvLUXyEcal/0p5jhuhJP6V4aLQCURI01z72sL43Aqn2yvLVHy6x4vGYEqnTBaT+dh3lHQypxraUzb9z+qub8Rg3bWYPvg9tWAtqlBVdPtwwRx/LQ6nE6buQI9OSQZ0tIWhPxkrAycrIvyiz1oJHJSJO4hNFhTUlX1a+ygRIQXnPjQefzFhM0mSK1vWSQWWdedHjkh6O0JVS+0mh9BOxrky9WlPfh+nVaAYxhJ9309NAKQMKkBlf+cC3AT31tdHGF9CIjjYYAO9E/Wu3rlzePcTJ8CpO3SEzjA7ZI0ga+97EinySaqyL9Jb0SEXa1RLniSwB2TNr1lGNugyj7vB97pWDIIfyUE1QDehJt6TZBH7ewTTzJGxpFqoMCLoiCKWdVsxUqrDKbA/kj5Syrv+mG+Jw3quI+6FFSVeX7xJtlZ0J+5hSZuzb67wBtR1XKx2xQCqAn5BUEfhnINAKjU5jCT/07dxJYuCO5AFXuyiQMWh4na/LJi+qeMyJpF3IGnunmQ=
+    file_glob: true
+    file: products/*
+    skip_cleanup: true
+    on:
+        repo: meggart/BuildJPEG
+        tags: true
