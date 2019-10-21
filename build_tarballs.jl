@@ -15,7 +15,6 @@ sources = [
 # Bash recipe for building across all platforms
 script = raw"""
 cd $WORKSPACE/srcdir
-./configure --prefix=$prefix --host=$target ./jpeg-9c/
 cd jpeg-9c
 ./configure --prefix=$prefix --host=$target
 make
